@@ -1,0 +1,69 @@
+{
+	http_port 8080
+	https_port 8443
+}
+
+(base_server) {
+	handle /local/trails/manager* {
+		try_files {path} {path}/ /local/trails/manager/index.php{query}
+	}
+
+	handle /local/trails* {
+		try_files {path} {path}/ /local/trails/index.php{query}
+	}
+}
+
+(logging) {
+	log {
+		hostnames {args[0]}
+		output file /var/log/caddy/{args[0]}.log
+		format console
+		level ERROR
+	}
+}
+
+example.test {
+	root * /var/www/example
+	php_fastcgi 127.0.0.1:9000 {
+		env SERVER_SOFTWARE "nginx"
+		env APP_DBHOST "db.example.test"
+		env APP_DBNAME "exampledb"
+		env APP_DBUSER "exampleuser"
+		env APP_DBPASS "examplepass"
+		env APP_URL "https://example.test"
+		env APP_DATA "/var/www/example"
+		env APP_LOCALCACHE "/var/example/localcache"
+	}
+	file_server
+	import base_server
+	import logging example.test
+
+	route /webservice/api/* {
+		try_files {path} /webservice/api/index.php?{query}
+	}
+}
+
+another-example.test {
+	root * /var/www/another-example
+	php_fastcgi 127.0.0.1:9000 {
+		env SERVER_SOFTWARE "nginx"
+		env APP_DBHOST "db.another-example.test"
+		env APP_DBNAME "anotherdb"
+		env APP_DBUSER "anotheruser"
+		env APP_DBPASS "anotherpass"
+		env APP_URL "https://another-example.test"
+		env APP_DATA "/var/www/another-example"
+		env APP_LOCALCACHE "/var/another-example/localcache"
+	}
+	file_server
+	import base_server
+	import logging another-example.test
+
+	route /local/tenant/* {
+		try_files {path} /local/tenant/index.php?{query}
+	}
+
+	route /webservice/api/* {
+		try_files {path} /webservice/api/index.php?{query}
+	}
+}
