@@ -43,7 +43,7 @@ class SnippetBlock implements BlockInterface, CaddyfileSerializableInterface
 
     public static function parse(Lexer $lexer, ...$args): self
     {
-        // Current token is "(nome)"
+        // Current token is "(name)"
         $m = [];
         preg_match('/^\(([^)]+)\)$/', $lexer->next()->text, $m);
         $name = $m[1];

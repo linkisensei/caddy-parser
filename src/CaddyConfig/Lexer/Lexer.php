@@ -2,13 +2,17 @@
 
 namespace CaddyParser\CaddyConfig\Lexer;
 
+/**
+ * Processes the input Caddyfile text and converts it
+ * into a sequence of tokens.
+ */
 class Lexer {
     private array $tokens = [];
-    private int   $pos = 0;
+    private int $pos = 0;
 
     public function __construct(string $text)
     {
-        $text = preg_replace('/#.*$/m', '', $text);
+        $text = preg_replace('/#.*$/m', '', $text); // Removing comments
         $pattern = '/
         ("(?:\\\\.|[^\\\\"])*")|              # double-quoted strings
         (`(?:\\\\.|[^\\\\`])*`)|              # backtick-quoted strings
@@ -19,16 +23,16 @@ class Lexer {
     
         preg_match_all($pattern, $text, $matches, PREG_OFFSET_CAPTURE);
         foreach ($matches[0] as $m) {
-            [$tok, $offset] = $m;
+            [$token, $offset] = $m;
             $line = substr_count(substr($text, 0, $offset), "\n") + 1;
-            if ($tok === '{') {
-                $type = TokenType::BRACE_OPEN;
-            } elseif ($tok === '}') {
-                $type = TokenType::BRACE_CLOSE;
-            } else {
-                $type = TokenType::STRING;
-            }
-            $this->tokens[] = new Token($type, $tok, $line);
+
+            $type = match ($token) {
+                '{' => TokenType::BRACE_OPEN,
+                '}' => TokenType::BRACE_CLOSE,
+                default => TokenType::STRING,
+            };
+
+            $this->tokens[] = new Token($type, $token, $line);
         }
         $lastLine = substr_count($text, "\n") + 1;
         $this->tokens[] = new Token(TokenType::EOF, '', $lastLine);
@@ -52,5 +56,10 @@ class Lexer {
     public function eof(): bool
     {
         return $this->peek()->type === TokenType::EOF;
+    }
+
+    public function reset() : static {
+        $this->pos = 0;
+        return $this;
     }
 }

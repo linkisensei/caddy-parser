@@ -40,13 +40,13 @@ class CaddyfileParser
     {
         $caddy = new Caddyfile();
 
-        // 1) Global options?
+        // Global options?
         if ($this->lexer->peek()->type === TokenType::BRACE_OPEN) {
             $this->lexer->next();
             $caddy->setGlobalOptions(GlobalOptionsBlock::parse($this->lexer));
         }
 
-        // 2) Top-level blocks
+        // Top-level blocks
         while (!$this->lexer->eof()) {
             $peek = $this->lexer->peek();
 
