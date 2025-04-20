@@ -30,7 +30,7 @@ class Matcher extends AbstractElement
 
     public static function parse(Lexer $lexer): self
     {
-        $token = $lexer->next(); // Ex: "@post", "/index.html", "*"
+        $token = $lexer->consume(); // Ex: "@post", "/index.html", "*"
         $text = $token->text;
 
         // Detect matcher type

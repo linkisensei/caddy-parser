@@ -47,13 +47,13 @@ class NamedRouteBlock implements BlockInterface, CaddyfileSerializableInterface
         $m = [];
         preg_match('/^&\(([^)]+)\)$/', $lexer->next()->text, $m);
         $name = $m[1];
-        $lexer->next(); // consumes '{'
+        $lexer->next(); // skipping '{'
         $block = new self($name);
 
         while (!$lexer->eof() && $lexer->peek()->type !== TokenType::BRACE_CLOSE) {
             $block->addDirective(Directive::parse($lexer));
         }
-        $lexer->next(); // consumes '}'
+        $lexer->next(); // skipping '}'
         return $block;
     }
 

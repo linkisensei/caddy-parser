@@ -45,15 +45,15 @@ class SnippetBlock implements BlockInterface, CaddyfileSerializableInterface
     {
         // Current token is "(name)"
         $m = [];
-        preg_match('/^\(([^)]+)\)$/', $lexer->next()->text, $m);
+        preg_match('/^\(([^)]+)\)$/', $lexer->consume()->text, $m);
         $name = $m[1];
-        $lexer->next(); // consuming '{'
+        $lexer->next(); // skipping '{'
         $block = new self($name);
 
         while (!$lexer->eof() && $lexer->peek()->type !== TokenType::BRACE_CLOSE) {
             $block->addDirective(Directive::parse($lexer));
         }
-        $lexer->next(); // consuming '}'
+        $lexer->next(); // skipping '}'
         return $block;
     }
 

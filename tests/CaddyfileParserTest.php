@@ -19,9 +19,9 @@ class CaddyfileParserTest extends TestCase
         $lexer = new Lexer($text);
         $tokens = [];
         while (!$lexer->eof()) {
-            $tok = $lexer->next();
-            if ($tok->type !== TokenType::EOF) {
-                $tokens[] = $tok;
+            $token = $lexer->consume();
+            if ($token->type !== TokenType::EOF) {
+                $tokens[] = $token;
             }
         }
         $texts = array_map(fn(Token $t) => $t->text, $tokens);
@@ -34,9 +34,9 @@ class CaddyfileParserTest extends TestCase
         $lexer = new Lexer($text);
         $texts = [];
         while (!$lexer->eof()) {
-            $tok = $lexer->next();
-            if ($tok->type !== TokenType::EOF) {
-                $texts[] = $tok->text;
+            $token = $lexer->consume();
+            if ($token->type !== TokenType::EOF) {
+                $texts[] = $token->text;
             }
         }
         $this->assertEquals(['a', '"quoted value"', 'b', '`backtick`'], $texts);
@@ -48,9 +48,9 @@ class CaddyfileParserTest extends TestCase
         $lexer = new Lexer($text);
         $texts = [];
         while (!$lexer->eof()) {
-            $tok = $lexer->next();
-            if ($tok->type !== TokenType::EOF) {
-                $texts[] = $tok->text;
+            $token = $lexer->consume();
+            if ($token->type !== TokenType::EOF) {
+                $texts[] = $token->text;
             }
         }
         $this->assertContains('{path}', $texts);
@@ -65,9 +65,9 @@ line2
 EOD
 ";
         $lexer = new Lexer($text);
-        $tok = $lexer->next();
-        $this->assertEquals(TokenType::STRING, $tok->type);
-        $this->assertStringContainsString("line1", $tok->text);
+        $token = $lexer->consume();
+        $this->assertEquals(TokenType::STRING, $token->type);
+        $this->assertStringContainsString("line1", $token->text);
     }
 
     public function testParseGlobalOptions()

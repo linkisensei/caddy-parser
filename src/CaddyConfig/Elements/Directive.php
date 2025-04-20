@@ -67,25 +67,25 @@ class Directive extends AbstractElement
      */
     public static function parse(Lexer $lexer): self
     {
-        $nameTok = $lexer->next();
-        $dir = new self($nameTok->text);
-        $currentLine = $nameTok->line;
+        $nameToken = $lexer->consume();
+        $dir = new self($nameToken->text);
+        $currentLine = $nameToken->line;
 
         while (!$lexer->eof() && ($peek = $lexer->peek())->line === $currentLine) {
             if ($peek->type === TokenType::BRACE_OPEN) {
                 // sub-block of subdirectives
-                $lexer->next(); // consume '{'
+                $lexer->next(); // skipping '{'
                 while (!$lexer->eof() && $lexer->peek()->type !== TokenType::BRACE_CLOSE) {
                     $dir->addSubdirective(self::parse($lexer));
                 }
-                $lexer->next(); // consume '}'
+                $lexer->next(); // skipping '}'
                 break;
             }
 
             if ($peek->type === TokenType::STRING) {
-                $tok = $lexer->next();
-                $quoted = preg_match('/^".*"$|^`.*`$/', $tok->text) === 1;
-                $text = trim($tok->text, '"`');
+                $token = $lexer->consume();
+                $quoted = preg_match('/^".*"$|^`.*`$/', $token->text) === 1;
+                $text = trim($token->text, '"`');
                 $dir->addArgument(new Argument($text, $quoted));
             } else {
                 $lexer->next();

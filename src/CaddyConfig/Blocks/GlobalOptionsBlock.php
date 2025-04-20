@@ -36,7 +36,7 @@ class GlobalOptionsBlock implements BlockInterface, CaddyfileSerializableInterfa
         while (!$lexer->eof() && $lexer->peek()->type !== TokenType::BRACE_CLOSE) {
             $block->addDirective(Directive::parse($lexer));
         }
-        $lexer->next(); // consuming the next '}'
+        $lexer->next(); // skipping the next '}'
         return $block;
     }
 

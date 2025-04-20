@@ -30,9 +30,9 @@ class Argument extends AbstractElement
 
     public static function parse(Lexer $lexer): self
     {
-        $tok = $lexer->next();
-        $quoted = preg_match('/^".*"$|^`.*`$/', $tok->text) === 1;
-        $text = trim($tok->text, '"`');
+        $token = $lexer->consume();
+        $quoted = preg_match('/^".*"$|^`.*`$/', $token->text) === 1;
+        $text = trim($token->text, '"`');
         return new self($text, $quoted);
     }
 

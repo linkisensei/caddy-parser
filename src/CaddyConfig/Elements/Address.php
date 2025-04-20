@@ -37,12 +37,12 @@ class Address extends AbstractElement
 
     public static function parse(Lexer $lexer): self
     {
-        $tok = $lexer->next()->text;
+        $token = $lexer->consume()->text;
         $scheme = 'https';
-        if (strpos($tok, '://') !== false) {
-            [$scheme, $rest] = explode('://', $tok, 2);
+        if (strpos($token, '://') !== false) {
+            [$scheme, $rest] = explode('://', $token, 2);
         } else {
-            $rest = $tok;
+            $rest = $token;
         }
 
         $port = null;

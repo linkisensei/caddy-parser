@@ -54,7 +54,7 @@ class SiteBlock implements BlockInterface, CaddyfileSerializableInterface
         // the first argument in $args is always the array of addresses
         $addresses = $args[0] ?? []; /** @todo Raise some Exception in here */
 
-        // consuming the opening brace '{'
+        // skipping the opening brace '{'
         $lexer->next();
 
         $block = new self($addresses);
@@ -65,7 +65,7 @@ class SiteBlock implements BlockInterface, CaddyfileSerializableInterface
             $block->addDirective(Directive::parse($lexer));
         }
 
-        // consuming the closing brace '}'
+        // skipping the closing brace '}'
         $lexer->next();
 
         return $block;
