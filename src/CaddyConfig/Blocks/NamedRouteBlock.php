@@ -45,7 +45,7 @@ class NamedRouteBlock implements BlockInterface, CaddyfileSerializableInterface
     {
         // current token is "&(name)"
         $m = [];
-        preg_match('/^&\(([^)]+)\)$/', $lexer->next()->text, $m);
+        preg_match('/^&\(([^)]+)\)$/', $lexer->consume()->text, $m);
         $name = $m[1];
         $lexer->next(); // skipping '{'
         $block = new self($name);

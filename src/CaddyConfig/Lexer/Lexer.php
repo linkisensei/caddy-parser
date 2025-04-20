@@ -18,11 +18,11 @@ class Lexer implements \Iterator
 
         // Tokenization pattern
         $pattern = '/
-        ("(?:\\\\.|[^\\\\"])*")|              # double-quoted strings
-        (`(?:\\\\.|[^\\\\`])*`)|              # backtick-quoted strings
-        (<<([A-Za-z0-9_-]+)\n[\s\S]*?\n\4\n)| # heredocs
-        (\{[^{}\s]+\})|                       # single-line placeholders like {path} or {$ENV}
-        (\{|\})|                              # individual braces
+        ("(?:\\\\.|[^\\\\"])*")|                        # double-quoted strings
+        (`(?:\\\\.|[^\\\\`])*`)|                        # backtick-quoted strings
+        (<<([A-Za-z0-9_-]+)\r?\n[\s\S]*?\r?\n\4\r?\n)|  # heredocs with optional CRLF
+        (\{[^{}\s]+\})|                                 # single-line placeholders like {path} or {$ENV}
+        (\{|\})|                                        # individual braces
         ([^\s]+)/x';
 
         preg_match_all($pattern, $text, $matches, PREG_OFFSET_CAPTURE);
